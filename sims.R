@@ -13,7 +13,7 @@ phi <- 2
   #set.seed(10)
   
   {
-    n <- 100
+    n <- 10
     
     beta<-c(1,1)
     x<-seq(0,1,length.out=n)
@@ -48,6 +48,8 @@ phi <- 2
     gamma.err <- vector()
     ks <- vector()
     thetas <- vector()
+    kthetas <- vector()
+    biases <- vector()
   }
   
   for (sim in 1:N) { 
@@ -102,8 +104,11 @@ phi <- 2
     Q <- X %*% solve(t(X) %*% W %*% X) %*% t(X)
     S <- sum(1/muhat) + n * sum(diag(Q))-sum(Q)
     
-    bias <- - (alpha3.hat-phihat2^2)*S/n/df
     
+    bias <-  (alpha3.hat-phihat2^2)*S/n/df
+    
+    biases[sim] <- bias
+    #bias <- 0
     
     #phihat. <- phihat2 - bias
     #bias <- (alpha3.hat/phihat.-phihat.)*S/n
@@ -113,7 +118,8 @@ phi <- 2
     #bias <- (alpha3.hat/phihat.-phihat.)*S/n
     
     
-    ktheta <- df - df * bias / phihat2
+    # plus or minus?
+    ktheta <- df + df * bias / phihat2
     #ktheta2 <- 2 * ktheta #df * (2 + tau) 
     ktheta2 <- df * (2 + tau) 
     
@@ -121,7 +127,7 @@ phi <- 2
     theta <- ktheta2 / ktheta
     k <- ktheta / theta
     
-    
+    kthetas[sim] <- ktheta
     ## Gamma CI. only for phihat2
     #e <- (y-muhat)/sqrt(phihat2 * muhat)
     #rho3 <- e^3
@@ -213,7 +219,7 @@ phi <- 2
     y1<-dchisq(c,df=n-p)
     lines(c,y1,col='black',lwd=3) 
     
-    gs <- 1
+    gs <- 10
     for (i in 1:gs) {    
       y2<- dgamma(c,shape=ks[i],scale=2)
       lines(c,y2,col=rainbow(gs)[i]) 

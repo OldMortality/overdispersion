@@ -10,7 +10,7 @@ library(rmutil)   # for "rinvgauss"
 
 phi <- 2
   
-  set.seed(10)
+  #set.seed(10)
   
   {
     n <- 100

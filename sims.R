@@ -8,12 +8,12 @@ library(rmutil)   # for "rinvgauss"
 #   Plots first 100 of the simulations, with error rates.
 #
 
-phi <- 2
+phi <- 10
   
-  #set.seed(10)
+  set.seed(10)
   
   {
-    n <- 10
+    n <- 100
     
     beta<-c(1,1)
     x<-seq(0,1,length.out=n)
@@ -26,11 +26,9 @@ phi <- 2
     mx<-log(mu)-0.5*log(w)
     sx<-sqrt(log(w))
     
-    N <- 5000
+    N <- 10000
     # bounds of CI for chisq and phi1
     
-    lower.1 <- vector()
-    upper.1 <- vector()
     # bounds of CI for chisq and phi2
     lower.2 <- vector()
     upper.2 <- vector()
@@ -39,7 +37,6 @@ phi <- 2
     gamma.upper <- vector()
     
     # estimates of phi
-    phihats1 <- vector()
     phihats2 <- vector()
     
     # does CI contain true phi?
@@ -53,14 +50,15 @@ phi <- 2
   }
   
   for (sim in 1:N) { 
+    print(sim)
     if (phi==1) { 
       y<-rpois(n,mu) } 
     else { 
-      y<-rnegbin(n,mu,mn) # negative binomial
+      #y<-rnegbin(n,mu,mn) # negative binomial
       
       #y<-rpois(n,rpois(n,mn)*nu)             # Neyman Type A
       #y<-rpois(n,rlnorm(n,mx,sx))            # Poisson lognormal
-      #y<-rpois(n,rinvgauss(n,1,1/mn)*mu)     # Poisson inverse Gaussian
+      y<-rpois(n,rinvgauss(n,1,1/mn)*mu)     # Poisson inverse Gaussian
       
     }  
     muhat<-fitted(glm(y~x,family="poisson"))
@@ -68,28 +66,21 @@ phi <- 2
     sbar<-mean((y-muhat)/muhat) 
     phihat1<-P/(n-p)
     phihat2<-phihat1/(1+sbar) 
-    phihats1[sim] <- phihat1
     phihats2[sim] <- phihat2
     
     # chisquare CI
     df <- n-p
-    lower.1[sim] <- df * phihat1  / qchisq(0.95,df=df)
-    upper.1[sim] <- df * phihat1  / qchisq(0.05,df=df)
     lower.2[sim] <- df * phihat2  / qchisq(0.95,df=df)
     upper.2[sim] <- df * phihat2  / qchisq(0.05,df=df)
     
-    err.1[sim] <- 0
-    if (phi < lower.1[sim] | phi > upper.1[sim]) {
-      err.1[sim] <-  1
-    }
     err.2[sim] <- 0
     if (phi < lower.2[sim] | phi > upper.2[sim]) {
       err.2[sim] <-  1
     }
+    
     #
     e <- y-muhat
     alpha3.hat <- (1/df) * sum( (e^3/muhat))
-    #alpha4.hat <- (1/df) * sum((e^4 - 3 * e^2)/muhat)
     alpha4.hat <- (1/df) * sum(e^4/muhat) - 3 * muhat* phihat2^2
     tau.i <- (alpha4.hat/phi^2 - 2 * alpha3.hat/phi + phi )
     tau.i <- (1/muhat) * tau.i
@@ -104,37 +95,28 @@ phi <- 2
     Q <- X %*% solve(t(X) %*% W %*% X) %*% t(X)
     S <- sum(1/muhat) + n * sum(diag(Q))-sum(Q)
     
+    # bias for R = df * phihat/phi
+    bias.phi <-  -(alpha3.hat-phihat2^2)*S/n/df
     
-    bias <-  (alpha3.hat-phihat2^2)*S/n/df
+    biases[sim] <- bias.phi
     
-    biases[sim] <- bias
-    #bias <- 0
-    
-    #phihat. <- phihat2 - bias
-    #bias <- (alpha3.hat/phihat.-phihat.)*S/n
-    #phihat. <- phihat. - bias
-    #bias <- (alpha3.hat/phihat.-phihat.)*S/n
-    #phihat. <- phihat. - bias
-    #bias <- (alpha3.hat/phihat.-phihat.)*S/n
+    # phihat. <- phihat2 - bias.phi
+    # bias.phi <- -(alpha3.hat-phihat.^2)*S/n/df
+    # phihat. <- phihat2 - bias.phi
+    # bias.phi <- -(alpha3.hat-phihat.^2)*S/n/df
+    # phihat. <- phihat2 - bias.phi
+    # bias.phi <- -(alpha3.hat-phihat.^2)*S/n/df 
     
     
     # plus or minus?
-    ktheta <- df + df * bias / phihat2
-    #ktheta2 <- 2 * ktheta #df * (2 + tau) 
+    ktheta <- df + df * bias.phi / phihat2
     ktheta2 <- df * (2 + tau) 
-    
     
     theta <- ktheta2 / ktheta
     k <- ktheta / theta
     
     kthetas[sim] <- ktheta
-    ## Gamma CI. only for phihat2
-    #e <- (y-muhat)/sqrt(phihat2 * muhat)
-    #rho3 <- e^3
-    #rho4 <- e^4 - 3
-    #alpha.bar <- mean(rho4 + phihat2/muhat - 2 * sqrt(phihat2/muhat) * rho3)
-    #theta <- 2 + alpha.bar
-    #k <- df/(2+alpha.bar)
+    
     
     thetas[sim] <- theta
     ks[sim] <- k 
@@ -143,18 +125,19 @@ phi <- 2
                                              scale=theta)
     
     gamma.upper[sim] <- df * phihat2  / qgamma(0.05,
-                                             shape=k,
-                                             scale=theta)
+                                               shape=k,
+                                               scale=theta)
+                                               
     gamma.err[sim] <- (phi < gamma.lower[sim]) |
                  (phi > gamma.upper[sim])
     
   }
   
   # error rates
-  e1 <- sum(err.1)/N
+  #e1 <- sum(err.1)/N
   e2 <- sum(err.2)/N
   e3 <- sum(gamma.err,na.rm=T)/length(which(!is.na(gamma.err)))
-  paste(e1,e2,e3,sep='   ')
+  paste(e2,e3,sep='   ')
   
   # plot CIs, show first plotN simulations
   plotCIs <- function(low,upp,err,phihat,truePhi,plotN,main,
@@ -166,7 +149,7 @@ phi <- 2
     abline(h=truePhi,col='red')
     for (i in 1:plotN) {
       col <- 'black'
-      if (err[i] == 1) {
+      if (!is.na(err[i]) && err[i] == 1) {
         col <- 'red'
       }
       segments(i,low[i],i,upp[i],col=col)
@@ -176,8 +159,6 @@ phi <- 2
   }  
   
   par(mfrow=c(1,2))
-  plotCIs(lower.1,upper.1,err.1,phihats1,phi,plotN=100,
-          main="Chisq, phihat1",e1)
   plotCIs(lower.2,upper.2,err.2,phihats2,phi,plotN=100,
           main="Chisq, phihat2",e2)
   plotCIs(gamma.lower,gamma.upper,gamma.err,phihats2,phi,plotN=100,
@@ -185,7 +166,6 @@ phi <- 2
   
   #par(mfrow=c(1,3))
   
-  median(upper.1-lower.1)
   median(upper.2-lower.2)
   median(gamma.upper-gamma.lower,na.rm=T)
   
@@ -237,18 +217,11 @@ df
 hist(phihats2)
 abline(v=phi,col='red')
 abline(v=mean(phihats2,col='blue'))
-#par(mfrow=c(2,2))
-
-##(n / df) * phi
-#var(phihats1)
-
-# these should be roughly equal:
-#(1/(df)) * (sum(y^2/muhat)-sum(muhat))
-#phihat2
-#
 
 
-paste(e1,e2,e3,sep='   ')
+
+paste(e2,e3,sep='   ')
+length(which(!is.na(gamma.err)))
 
 zz <- phi * rchisq(1000,df=df)/df
 plot(density(phihats2))

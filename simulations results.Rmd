@@ -1,0 +1,39 @@
+---
+title: "overdispersion simulations"
+author: "Michel de Lange"
+date: "3/27/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r echo=F}
+source('~/Documents/overdispersion/readresults.R')
+results$mu.lower <- round(results$mu.lower,1)
+results$mu.upper <- round(results$mu.upper,1)
+results$chisq <- round(results$chisq,2)
+results$gamma <- round(results$gamma,2)
+results$bootstrap <- round(results$bootstrap,2)
+results$vgam <- round(results$vgam,2)
+results$ee <- round(results$ee,2)
+
+# where phi==1, population is Poisson
+results[which(results$phi==1),"Population"] <- "Poisson"
+
+
+```
+
+```{r }
+library(knitr)
+kable(results[,c(1,2,3,11,12,7,8,9,10,13)])
+```
+
+

@@ -1,6 +1,7 @@
 library(MASS)     # for "rnegbin"
 library(rmutil)   # for "rinvgauss"
 library(VGAM)
+   
 
 # calculate CI's for phi, based on chisquare distribution
 #   with phihat1 and phihat2, and on Gamma distribution
@@ -10,19 +11,19 @@ library(VGAM)
 #
 
 
+
 # for testing:
 population = "Negbin"
 phi = 2
-n=100
+n=30
 b = c(-3,3)
 N = 10000
-calcCoverage(population,phi,n,b,N)
+#calcCoverage(population,phi,n,b,N)
 
 calcCoverage <- function(population,phi,n,b,N) {
 
   parms <- paste(population,phi,n,b[1],b[2],N,sep=',')
   print(parms)
-  
   set.seed(10)
   beta<-c(b[1],b[2])
   x<-seq(0,1,length.out=n)
@@ -36,31 +37,37 @@ calcCoverage <- function(population,phi,n,b,N) {
   w<-(mn+1)/mn
   mx<-log(mu)-0.5*log(w)
   sx<-sqrt(log(w))
-  # bounds of CI for chisq and phi2
+  # bounds of CI for chisq
   lower.chisq <- vector()
   upper.chisq <- vector()
-  # bounds of CI for gamma and phi2
+  err.chisq <- vector()
+    
+  # bounds of CI for gamma 
   gamma.lower <- vector()
   gamma.upper <- vector()
-  boots2.low <- vector()
-  boots2.upp <- vector()
+  gamma.err <- vector()
     
+  # bounds of CI for bootstrap
+  boots2.low <- vector()
+  boots2.upp <- vector()  
+  boots2.err <- vector()
+    
+  # bounds of CI for vgam
+  vgam.low <- vector()
+  vgam.upp <- vector()
+  vgam.err <- vector()	    
+
+
   # estimates of phi
   phihats2 <- vector()
   phi.hats.boots2 <- vector()
 
 
   # does CI contain true phi?
-  err.2 <- vector()
-  gamma.err <- vector()
-  boots.err <- vector()
-  boots2.err <- vector()
   ks <- vector()
-  q.low <- vector()
-  q.upp <- vector()
   
-  for (sim in 1:N) { 
-    print(sim)
+  for (sim in 1:N) {
+    if (sim %% 1000 == 0) { print(sim) }
     # set true population
     if (phi==1) { 
       y<-rpois(n,mu) } 
@@ -81,12 +88,6 @@ calcCoverage <- function(population,phi,n,b,N) {
       
     muhat<-fitted(glm(y~x,family="poisson"))
     P<-sum((y-muhat)^2/muhat)
-    
-    #Q <- (y-muhat)^2/muhat
-    #q.low[sim] <- quantile(Q,0.1)
-    #q.upp[sim] <- quantile(Q,0.9)
-    
-      
     sbar<-mean((y-muhat)/muhat) 
     phihat1<-P/(n-p)
     phihat2<-phihat1/(1+sbar) 
@@ -97,9 +98,9 @@ calcCoverage <- function(population,phi,n,b,N) {
     lower.chisq[sim] <- df * phihat2  / qchisq(0.95,df=df)
     upper.chisq[sim] <- df * phihat2  / qchisq(0.05,df=df)
     
-    err.2[sim] <- 0
+    err.chisq[sim] <- 0
     if (phi < lower.chisq[sim] | phi > upper.chisq[sim]) {
-      err.2[sim] <-  1
+      err.chisq[sim] <-  1
     }
     
     #
@@ -137,58 +138,67 @@ calcCoverage <- function(population,phi,n,b,N) {
     gamma.err[sim] <- (phi < gamma.lower[sim]) |
                  (phi > gamma.upper[sim])
 
+
+    # bootstrap
+
+    do.bootstrap <- T
+    
+    if (do.bootstrap == T) {
+
+      
+      B = 10000
+      phihat.boots2 <- vector()
+    
+      e. <- (y-muhat)/sqrt(muhat)
+      for (i in 1:B) {
+        #print(i)
+        subsample.index <- sample(seq(1,n),replace = T)
+        e <- e.[subsample.index]
+    
+        P.b<-sum(e^2)
+        phi.1.b <- P.b/df
+        phi.2.b <- phi.1.b / (1+sbar)
+        phihat.boots2[i] <- phi.2.b
+      }
+  
+      boots2.int <- (df /phihat2) *quantile(phihat.boots2,c(0.025,0.975)) 
+      #phi.hats.boots2[sim] <- mean(phihat.boots2)
+      boots2.low[sim] <- (df * phihat2 ) / boots2.int[2]
+      boots2.upp[sim] <- (df * phihat2 ) / boots2.int[1]
+  
+      boots2.err[sim] <- (phi < boots2.low[sim]) |
+        (phi > boots2.upp[sim])
+    }	  
+    
+    ## RR regression
+    tryCatch(
+      {
+        a3<-vglm(y~x,family=negbinomial(parallel=T,zero=NULL))
+        phihat3<-Confint.nb1(a3)$phi0
+        phihat3ci<-Confint.nb1(a3)$CI.phi0
+        vgam.low[sim] <- phihat3ci[1] 
+        vgam.upp[sim] <- phihat3ci[2] 
+        vgam.err[sim] <- (phi < vgam.low[sim]) |
+          (phi > vgam.upp[sim])
+        
+      },
+      error=function(cond) {
+        message(cond)
+        return(NA)
+      }
+      
+    )
     
 
-    # boots2
-    B = 1
-    phihat.boots2 <- vector()
-    
-    e. <- (y-muhat)/sqrt(muhat)
-    for (i in 1:B) {
-      print(i)
-      subsample.index <- sample(seq(1,n),replace = T)
-      e <- e.[subsample.index]
-    
-      P.b<-sum(e^2)
-      phi.1.b <- P.b/df
-      sbar.b <- mean(e/sqrt(muhat[subsample.index]))
-      phi.2.b <- phi.1.b / (1+sbar.b)
-      phihat.boots2[i] <- phi.2.b
-    }
-  
-    boots2.int <- (df /phihat2) *quantile(phihat.boots2,c(0.025,0.975)) 
-    #phi.hats.boots2[sim] <- mean(phihat.boots2)
-    boots2.low[sim] <- (df * phihat2 ) / boots2.int[2]
-    boots2.upp[sim] <- (df * phihat2 ) / boots2.int[1]
-  
-    boots2.err[sim] <- (phi < boots2.int[1]) |
-      (phi > boots2.int[2])
-  
-  
+
   }
   # error rates
-  errorChisq <- sum(err.2)/N
+  errorChisq <- sum(err.chisq)/N
   errorGamma <- sum(gamma.err,na.rm=T)/length(which(!is.na(gamma.err)))
-  errorBoots2 <- sum(boots2.err)/N
+  errorBoots2 <- sum(boots2.err,na.rm=T)/length(which(!is.na(boots2.err)))
+  errorVGAM <- sum(vgam.err,na.rm=T)/length(which(!is.na(vgam.err)))
   
-  #q.err <- vector()
-  #q.err <- (phi < q.low) |
-  #  (phi > q.upp)
-  #sum(q.upp < phi)
-  #hist(q.upp)
-  
-  
-  
-  a3<-vglm(y~x,family=negbinomial(parallel=T,zero=NULL))
-  phihat3<-Confint.nb1(a3)$phi0
-  phihat3ci<-Confint.nb1(a3)$CI.phi0
-  
-  round(c(phihat1,phihat2),3)
-  round(c(phihat3,phihat3ci),3)
-  
-  
-  
-  result <- c(1-errorChisq,1-errorGamma,1-errorBoots2)
+  result <- c(1-errorChisq,1-errorGamma,1-errorBoots2,1-errorVGAM)
   return(result)
 } # end of calcCoverage
 
@@ -206,14 +216,15 @@ for (pop in pops) {
     for (n in ns) {
       for (b in seq(1,3)) {
         counter <- counter + 1
-        print(counter)
+        print(paste('counter: ',counter))
         coverage <- calcCoverage(population=pop,
                                  phi=phi,
                                  n=n,
                                  b=betas[b,],
-                                 N=10000)
-        parms <- paste(pop,phi,n,betas[b,1],betas[b,2],N,coverage[1],coverage[2],coverage[2],sep=',')
+                                 N=N)
+        parms <- paste(pop,phi,n,betas[b,1],betas[b,2],N,coverage[1],coverage[2],coverage[3],coverage[4],sep=',')
         results[counter] <- parms
+        print(parms)
         
       }
     }
@@ -222,11 +233,5 @@ for (pop in pops) {
 write.csv(results,'results.csv',row.names=F,quote=F)
 
 
-#beta <- c(-3,3)
-#beta <- c(0.1,2.2)
-#beta <- c(2.3,0.7)
 
-#eta<-beta[1]+beta[2]*x
-#mu<-exp(eta)
-#range(mu)
-#hist(mu)
+

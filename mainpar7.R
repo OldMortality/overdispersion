@@ -158,7 +158,7 @@ doCalculations <- function(population,phi,n,b,N) {
 
   parms <- paste(population,phi,n,b[1],b[2],N,sep=',')
   print(parms)
-  set.seed(10)
+  
   beta<-c(b[1],b[2])
   p<-length(beta)
   eta<-beta[1]+beta[2]*x
@@ -342,10 +342,11 @@ doCalculations <- function(population,phi,n,b,N) {
 
 print('started')
 print(Sys.time())
+set.seed(10)
 pops <- c("Negbin","Neyman","Poisson lognormal")
 betas <- rbind(c(-3,3),c(0.1,2.2),c(2.3,0.7))
 ns <-  c(30,100,1000)
-N <- 100 #00
+N <- 10000
 
 # All calculations, for writing to csv file. This will be
 #   vector of strings: Each line is the comma separated results for
@@ -370,7 +371,7 @@ for (pop in pops) {
         # 
         for (j in 1:length(phis)) {
           counter <- counter + 1
-          calcs.phi <- paste(pop,phis[j],n,betas[b,1],betas[b,2],N,sep=',')
+          calcs.phi <- paste(pop,phis[j],n,betas[coef,1],betas[coef,2],N,sep=',')
           for (k in 1:12) {
             calcs.phi <- paste(calcs.phi,calcs[j,k],sep=',')
           }

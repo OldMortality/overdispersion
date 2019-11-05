@@ -1,7 +1,7 @@
 ---
 title: "overdispersion simulations"
 author: "Michel de Lange"
-date: "3/27/2019"
+date: "5/21/2019"
 output: html_document
 ---
 
@@ -9,31 +9,65 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## CI's
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r echo=F}
-source('~/Documents/overdispersion/readresults.R')
-results$mu.lower <- round(results$mu.lower,1)
-results$mu.upper <- round(results$mu.upper,1)
-results$chisq <- round(results$chisq,2)
-results$gamma <- round(results$gamma,2)
-results$bootstrap <- round(results$bootstrap,2)
-results$vgam <- round(results$vgam,2)
-results$ee <- round(results$ee,2)
+source('~/Documents/overdispersion/readresults2.R')
+
+# This csv file contains 24 columns:
+#   6 coverage rates.  
+#   6 proportions with phi.lower > 1
+#   6 median widths of the CI for phi
+#   6 rates of method not working.
+#   a further 2 columns have been added for mu.lower and mu.upper
+
+#results$mu.lower <- round(results$mu.lower,1)
+#results$mu.upper <- round(results$mu.upper,1)
+#results$cov.chisq <- round(results$cov.chisq,2)
+#results$cov.gamma <- round(results$cov.gamma,2)
+#results$cov.boots1 <- round(results$cov.boots1,2)
+#results$cov.boots2 <- round(results$cov.boots2,2)
+#results$cov.vgam <- round(results$cov.vgam,2)
+#results$cov.ee <- round(results$cov.ee,2)
+
 
 # where phi==1, population is Poisson
 results[which(results$phi==1),"Population"] <- "Poisson"
+#results.ordered <- 
+#  results[order(results$Population,
+#                results$phi,
+#                results$n,
+#                results$mu.lower),]
 
 
 ```
 
 ```{r }
 library(knitr)
-kable(results[,c(1,2,3,11,12,7,8,9,10,13)])
+kable(results[,c(1,2,3,31,32,7:12)],
+      caption='Coverage of 90% CIs',
+      digits=2)
+```
+
+```{r }
+kable(results[,c(1,2,3,31,32,13:18)],
+      caption='lower bound 90% CIs exceeds 1 (proportion)',
+      digits=2)
+```
+
+```{r }
+kable(results[,c(1,2,3,31,32,19:24)],
+      caption='90% CIs median width',
+      digits=2)
+
+```
+
+```{r }
+kable(results[,c(1,2,3,31,32,25:30)],
+      caption='Proportion of times method does not work',
+    digits=2)
 ```
 
 

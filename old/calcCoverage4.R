@@ -29,7 +29,7 @@ population = "Negbin"
 phi = 1
 n=30
 b = c(2.3,0.7)
-N = 100
+N = 10000
 #res <- calcCoverage(population,phi,n,b,N)
 
   
@@ -96,7 +96,7 @@ calcCoverage <- function(population,phi,n,b,N) {
   
   print(date())
   for (sim in 1:N) {
-    if (sim %% 100 == 0) { print(paste(sim,date(),sep=' ')) }
+    if (sim %% 1000 == 0) { print(paste(sim,date(),sep=' ')) }
     # set true population
     {
     if (phi==1) { 
@@ -195,7 +195,7 @@ for (pop in pops) {
     }
   }
 }
-write.csv(results,'results-ee.csv',row.names=F,quote=F)
+write.csv(results,'results-ee2.csv',row.names=F,quote=F)
 
 
 

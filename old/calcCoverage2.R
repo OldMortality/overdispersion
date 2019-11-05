@@ -12,7 +12,7 @@ library(VGAM)
 
 # for testing:
 population = "Negbin"
-phi = 2
+phi = 5
 n=100
 b = c(-3,3)
 N = 10000

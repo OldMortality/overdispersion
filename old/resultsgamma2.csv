@@ -1,0 +1,144 @@
+Negbin,1,30,-3,3,10000,0.9654,0.91102354,NaN,NaN
+Negbin,1,30,0.1,2.2,10000,0.9525,0.9549,NaN,NaN
+Negbin,1,30,2.3,0.7,10000,0.9509,0.9106,NaN,NaN
+Negbin,1,100,-3,3,10000,0.9615,0.977414174,NaN,NaN
+Negbin,1,100,0.1,2.2,10000,0.9511,0.9793,NaN,NaN
+Negbin,1,100,2.3,0.7,10000,0.9488,0.9409,NaN,NaN
+Negbin,1,1000,-3,3,10000,0.9553,0.9965,NaN,NaN
+Negbin,1,1000,0.1,2.2,10000,0.9513,0.9879,NaN,NaN
+Negbin,1,1000,2.3,0.7,10000,0.9505,0.9539,NaN,NaN
+Negbin,2,30,-3,3,10000,0.7076,0.662460568,NaN,NaN
+Negbin,2,30,0.1,2.2,10000,0.9276,0.9356,NaN,NaN
+Negbin,2,30,2.3,0.7,10000,0.9427,0.9002,NaN,NaN
+Negbin,2,100,-3,3,10000,0.6047,0.87040227,NaN,NaN
+Negbin,2,100,0.1,2.2,10000,0.9052,0.9602,NaN,NaN
+Negbin,2,100,2.3,0.7,10000,0.942,0.9383,NaN,NaN
+Negbin,2,1000,-3,3,10000,0.5296,0.9481,NaN,NaN
+Negbin,2,1000,0.1,2.2,10000,0.8958,0.979,NaN,NaN
+Negbin,2,1000,2.3,0.7,10000,0.9412,0.9556,NaN,NaN
+Negbin,3,30,-3,3,10000,0.5203,0.515703183,NaN,NaN
+Negbin,3,30,0.1,2.2,10000,0.8953,0.9109,NaN,NaN
+Negbin,3,30,2.3,0.7,10000,0.9361,0.8978,NaN,NaN
+Negbin,3,100,-3,3,10000,0.4441,0.822297855,NaN,NaN
+Negbin,3,100,0.1,2.2,10000,0.8679,0.9503,NaN,NaN
+Negbin,3,100,2.3,0.7,10000,0.9279,0.9303,NaN,NaN
+Negbin,3,1000,-3,3,10000,0.3949,0.9299,NaN,NaN
+Negbin,3,1000,0.1,2.2,10000,0.8412,0.9707,NaN,NaN
+Negbin,3,1000,2.3,0.7,10000,0.9261,0.9462,NaN,NaN
+Negbin,5,30,-3,3,10000,0.3592,0.376349951,NaN,NaN
+Negbin,5,30,0.1,2.2,10000,0.8281,0.865873175,NaN,NaN
+Negbin,5,30,2.3,0.7,10000,0.9204,0.8719,NaN,NaN
+Negbin,5,100,-3,3,10000,0.3233,0.760885926,NaN,NaN
+Negbin,5,100,0.1,2.2,10000,0.7818,0.9182,NaN,NaN
+Negbin,5,100,2.3,0.7,10000,0.9097,0.9188,NaN,NaN
+Negbin,5,1000,-3,3,10000,0.2936,0.9102,NaN,NaN
+Negbin,5,1000,0.1,2.2,10000,0.749,0.9619,NaN,NaN
+Negbin,5,1000,2.3,0.7,10000,0.9038,0.949,NaN,NaN
+Neyman,1,30,-3,3,10000,NA,NA,NA,NA
+Neyman,1,30,0.1,2.2,10000,NA,NA,NA,NA
+Neyman,1,30,2.3,0.7,10000,NA,NA,NA,NA
+Neyman,1,100,-3,3,10000,NA,NA,NA,NA
+Neyman,1,100,0.1,2.2,10000,NA,NA,NA,NA
+Neyman,1,100,2.3,0.7,10000,NA,NA,NA,NA
+Neyman,1,1000,-3,3,10000,NA,NA,NA,NA
+Neyman,1,1000,0.1,2.2,10000,NA,NA,NA,NA
+Neyman,1,1000,2.3,0.7,10000,NA,NA,NA,NA
+Neyman,2,30,-3,3,10000,0.808,0.718183734,NaN,NaN
+Neyman,2,30,0.1,2.2,10000,0.9468,0.9469,NaN,NaN
+Neyman,2,30,2.3,0.7,10000,0.9476,0.9032,NaN,NaN
+Neyman,2,100,-3,3,10000,0.7642,0.919599018,NaN,NaN
+Neyman,2,100,0.1,2.2,10000,0.9472,0.9753,NaN,NaN
+Neyman,2,100,2.3,0.7,10000,0.9483,0.9415,NaN,NaN
+Neyman,2,1000,-3,3,10000,0.7314,0.9741,NaN,NaN
+Neyman,2,1000,0.1,2.2,10000,0.9369,0.9864,NaN,NaN
+Neyman,2,1000,2.3,0.7,10000,0.9446,0.9542,NaN,NaN
+Neyman,3,30,-3,3,10000,0.7583,0.585819698,NaN,NaN
+Neyman,3,30,0.1,2.2,10000,0.9475,0.9408,NaN,NaN
+Neyman,3,30,2.3,0.7,10000,0.9499,0.9092,NaN,NaN
+Neyman,3,100,-3,3,10000,0.7347,0.910915012,NaN,NaN
+Neyman,3,100,0.1,2.2,10000,0.939,0.9694,NaN,NaN
+Neyman,3,100,2.3,0.7,10000,0.9452,0.9382,NaN,NaN
+Neyman,3,1000,-3,3,10000,0.699,0.9666,NaN,NaN
+Neyman,3,1000,0.1,2.2,10000,0.9326,0.985,NaN,NaN
+Neyman,3,1000,2.3,0.7,10000,0.9487,0.9548,NaN,NaN
+Neyman,5,30,-3,3,10000,0.6949,0.420619499,NaN,NaN
+Neyman,5,30,0.1,2.2,10000,0.9529,0.935980794,NaN,NaN
+Neyman,5,30,2.3,0.7,10000,0.9513,0.9041,NaN,NaN
+Neyman,5,100,-3,3,10000,0.7244,0.847489083,NaN,NaN
+Neyman,5,100,0.1,2.2,10000,0.9408,0.9684,NaN,NaN
+Neyman,5,100,2.3,0.7,10000,0.9482,0.9396,NaN,NaN
+Neyman,5,1000,-3,3,10000,0.6813,0.956199258,NaN,NaN
+Neyman,5,1000,0.1,2.2,10000,0.9284,0.983,NaN,NaN
+Neyman,5,1000,2.3,0.7,10000,0.9529,0.9591,NaN,NaN
+Poisson lognormal,1,30,-3,3,10000,NA,NA,NA,NA
+Poisson lognormal,1,30,0.1,2.2,10000,NA,NA,NA,NA
+Poisson lognormal,1,30,2.3,0.7,10000,NA,NA,NA,NA
+Poisson lognormal,1,100,-3,3,10000,NA,NA,NA,NA
+Poisson lognormal,1,100,0.1,2.2,10000,NA,NA,NA,NA
+Poisson lognormal,1,100,2.3,0.7,10000,NA,NA,NA,NA
+Poisson lognormal,1,1000,-3,3,10000,NA,NA,NA,NA
+Poisson lognormal,1,1000,0.1,2.2,10000,NA,NA,NA,NA
+Poisson lognormal,1,1000,2.3,0.7,10000,NA,NA,NA,NA
+Poisson lognormal,2,30,-3,3,10000,0.808,0.718183734,NaN,NaN
+Poisson lognormal,2,30,0.1,2.2,10000,0.9468,0.9469,NaN,NaN
+Poisson lognormal,2,30,2.3,0.7,10000,0.9476,0.9032,NaN,NaN
+Poisson lognormal,2,100,-3,3,10000,0.7642,0.919599018,NaN,NaN
+Poisson lognormal,2,100,0.1,2.2,10000,0.9472,0.9753,NaN,NaN
+Poisson lognormal,2,100,2.3,0.7,10000,0.9483,0.9415,NaN,NaN
+Poisson lognormal,2,1000,-3,3,10000,0.7314,0.9741,NaN,NaN
+Poisson lognormal,2,1000,0.1,2.2,10000,0.9369,0.9864,NaN,NaN
+Poisson lognormal,2,1000,2.3,0.7,10000,0.9446,0.9542,NaN,NaN
+Poisson lognormal,3,30,-3,3,10000,0.7583,0.585819698,NaN,NaN
+Poisson lognormal,3,30,0.1,2.2,10000,0.9475,0.9408,NaN,NaN
+Poisson lognormal,3,30,2.3,0.7,10000,0.9499,0.9092,NaN,NaN
+Poisson lognormal,3,100,-3,3,10000,0.7347,0.910915012,NaN,NaN
+Poisson lognormal,3,100,0.1,2.2,10000,0.939,0.9694,NaN,NaN
+Poisson lognormal,3,100,2.3,0.7,10000,0.9452,0.9382,NaN,NaN
+Poisson lognormal,3,1000,-3,3,10000,0.699,0.9666,NaN,NaN
+Poisson lognormal,3,1000,0.1,2.2,10000,0.9326,0.985,NaN,NaN
+Poisson lognormal,3,1000,2.3,0.7,10000,0.9487,0.9548,NaN,NaN
+Poisson lognormal,5,30,-3,3,10000,0.6949,0.420619499,NaN,NaN
+Poisson lognormal,5,30,0.1,2.2,10000,0.9529,0.935980794,NaN,NaN
+Poisson lognormal,5,30,2.3,0.7,10000,0.9513,0.9041,NaN,NaN
+Poisson lognormal,5,100,-3,3,10000,0.7244,0.847489083,NaN,NaN
+Poisson lognormal,5,100,0.1,2.2,10000,0.9408,0.9684,NaN,NaN
+Poisson lognormal,5,100,2.3,0.7,10000,0.9482,0.9396,NaN,NaN
+Poisson lognormal,5,1000,-3,3,10000,0.6813,0.956199258,NaN,NaN
+Poisson lognormal,5,1000,0.1,2.2,10000,0.9284,0.983,NaN,NaN
+Poisson lognormal,5,1000,2.3,0.7,10000,0.9529,0.9591,NaN,NaN
+Poisson inverse Gaussian,1,30,-3,3,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,1,30,0.1,2.2,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,1,30,2.3,0.7,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,1,100,-3,3,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,1,100,0.1,2.2,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,1,100,2.3,0.7,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,1,1000,-3,3,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,1,1000,0.1,2.2,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,1,1000,2.3,0.7,10000,NA,NA,NA,NA
+Poisson inverse Gaussian,2,30,-3,3,10000,0.6325,0.614550432,NaN,NaN
+Poisson inverse Gaussian,2,30,0.1,2.2,10000,0.9042,0.9251,NaN,NaN
+Poisson inverse Gaussian,2,30,2.3,0.7,10000,0.9348,0.8989,NaN,NaN
+Poisson inverse Gaussian,2,100,-3,3,10000,0.5073,0.835681703,NaN,NaN
+Poisson inverse Gaussian,2,100,0.1,2.2,10000,0.873,0.9526,NaN,NaN
+Poisson inverse Gaussian,2,100,2.3,0.7,10000,0.9333,0.936,NaN,NaN
+Poisson inverse Gaussian,2,1000,-3,3,10000,0.4075,0.9164,NaN,NaN
+Poisson inverse Gaussian,2,1000,0.1,2.2,10000,0.8495,0.975,NaN,NaN
+Poisson inverse Gaussian,2,1000,2.3,0.7,10000,0.9312,0.9545,NaN,NaN
+Poisson inverse Gaussian,3,30,-3,3,10000,0.4113,0.464323749,NaN,NaN
+Poisson inverse Gaussian,3,30,0.1,2.2,10000,0.8365,0.8856,NaN,NaN
+Poisson inverse Gaussian,3,30,2.3,0.7,10000,0.9185,0.8785,NaN,NaN
+Poisson inverse Gaussian,3,100,-3,3,10000,0.3342,0.765123457,NaN,NaN
+Poisson inverse Gaussian,3,100,0.1,2.2,10000,0.7731,0.9233,NaN,NaN
+Poisson inverse Gaussian,3,100,2.3,0.7,10000,0.9058,0.9219,NaN,NaN
+Poisson inverse Gaussian,3,1000,-3,3,10000,0.2828,0.9012,NaN,NaN
+Poisson inverse Gaussian,3,1000,0.1,2.2,10000,0.7219,0.9609,NaN,NaN
+Poisson inverse Gaussian,3,1000,2.3,0.7,10000,0.8969,0.948,NaN,NaN
+Poisson inverse Gaussian,5,30,-3,3,10000,0.245,0.338964578,NaN,NaN
+Poisson inverse Gaussian,5,30,0.1,2.2,10000,0.7046,0.816426571,NaN,NaN
+Poisson inverse Gaussian,5,30,2.3,0.7,10000,0.8729,0.8324,NaN,NaN
+Poisson inverse Gaussian,5,100,-3,3,10000,0.2163,0.693236976,NaN,NaN
+Poisson inverse Gaussian,5,100,0.1,2.2,10000,0.6366,0.8826,NaN,NaN
+Poisson inverse Gaussian,5,100,2.3,0.7,10000,0.8431,0.8932,NaN,NaN
+Poisson inverse Gaussian,5,1000,-3,3,10000,0.1861,0.871487149,NaN,NaN
+Poisson inverse Gaussian,5,1000,0.1,2.2,10000,0.5711,0.9418,NaN,NaN
+Poisson inverse Gaussian,5,1000,2.3,0.7,10000,0.8159,0.9413,NaN,NaN

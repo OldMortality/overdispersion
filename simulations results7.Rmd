@@ -1,0 +1,64 @@
+---
+title: "overdispersion simulations"
+author: "Michel de Lange"
+date: "5/11/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## CI's
+
+
+
+```{r echo=F}
+##
+##  This program prints tables of the CI's of beta.
+##
+results <- NA
+source('~/Documents/overdispersion/readresults7.R')
+
+# This csv file contains 20 columns:
+#   Population, phi, n, b1, b2, N  (that is 6)
+#   3 coverage rates.  
+#   3 proportions with CI not containing zero
+#   3 median widths of the CI for phi
+#   3 rates of method not working.
+#   mu.lower and mu.upper
+
+ 
+
+# where phi==1, population is Poisson
+results[which(results$phi == 1),"Population"] <- "Poisson"
+ 
+
+```
+
+```{r }
+library(knitr)
+kable(results[,c(1:6,19,20,7,8,9)],
+      caption='Coverage of 90% CIs',
+      digits=2)
+```
+
+```{r }
+kable(results[,c(1:6,19,20,10,11,12)],
+      caption='CI for beta includes zero',
+      digits=2)
+```
+
+```{r }
+kable(results[,c(1:6,19,20,13,14,15)],
+      caption = '90% CIs median width',
+      digits = 2)
+```
+
+```{r }
+kable(results[,c(1:6,19,20,16,17,18)],
+      caption = 'Proportion of times method does not work',
+    digits = 2)
+```
+
+

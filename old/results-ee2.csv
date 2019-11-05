@@ -1,0 +1,144 @@
+Negbin,1,30,-3,3,10000,0.848182181
+Negbin,1,30,0.1,2.2,10000,0.938
+Negbin,1,30,2.3,0.7,10000,0.9273
+Negbin,1,100,-3,3,10000,0.892107388
+Negbin,1,100,0.1,2.2,10000,0.9391
+Negbin,1,100,2.3,0.7,10000,0.9445
+Negbin,1,1000,-3,3,10000,0.9397
+Negbin,1,1000,0.1,2.2,10000,0.9492
+Negbin,1,1000,2.3,0.7,10000,0.9521
+Negbin,2,30,-3,3,10000,0.6
+Negbin,2,30,0.1,2.2,10000,0.8806
+Negbin,2,30,2.3,0.7,10000,0.9208
+Negbin,2,100,-3,3,10000,0.654059829
+Negbin,2,100,0.1,2.2,10000,0.9092
+Negbin,2,100,2.3,0.7,10000,0.9357
+Negbin,2,1000,-3,3,10000,0.870874175
+Negbin,2,1000,0.1,2.2,10000,0.947
+Negbin,2,1000,2.3,0.7,10000,0.9495
+Negbin,3,30,-3,3,10000,0.440643175
+Negbin,3,30,0.1,2.2,10000,0.803723351
+Negbin,3,30,2.3,0.7,10000,0.9096
+Negbin,3,100,-3,3,10000,0.520226442
+Negbin,3,100,0.1,2.2,10000,0.8794
+Negbin,3,100,2.3,0.7,10000,0.9305
+Negbin,3,1000,-3,3,10000,0.82161837
+Negbin,3,1000,0.1,2.2,10000,0.9357
+Negbin,3,1000,2.3,0.7,10000,0.9504
+Negbin,5,30,-3,3,10000,0.289634146
+Negbin,5,30,0.1,2.2,10000,0.692035577
+Negbin,5,30,2.3,0.7,10000,0.8815
+Negbin,5,100,-3,3,10000,0.372182681
+Negbin,5,100,0.1,2.2,10000,0.832549765
+Negbin,5,100,2.3,0.7,10000,0.9143
+Negbin,5,1000,-3,3,10000,0.724951486
+Negbin,5,1000,0.1,2.2,10000,0.9299
+Negbin,5,1000,2.3,0.7,10000,0.9474
+Neyman,1,30,-3,3,10000,NA
+Neyman,1,30,0.1,2.2,10000,NA
+Neyman,1,30,2.3,0.7,10000,NA
+Neyman,1,100,-3,3,10000,NA
+Neyman,1,100,0.1,2.2,10000,NA
+Neyman,1,100,2.3,0.7,10000,NA
+Neyman,1,1000,-3,3,10000,NA
+Neyman,1,1000,0.1,2.2,10000,NA
+Neyman,1,1000,2.3,0.7,10000,NA
+Neyman,2,30,-3,3,10000,0.660600098
+Neyman,2,30,0.1,2.2,10000,0.9066
+Neyman,2,30,2.3,0.7,10000,0.9293
+Neyman,2,100,-3,3,10000,0.755466779
+Neyman,2,100,0.1,2.2,10000,0.9228
+Neyman,2,100,2.3,0.7,10000,0.9412
+Neyman,2,1000,-3,3,10000,0.9056
+Neyman,2,1000,0.1,2.2,10000,0.9487
+Neyman,2,1000,2.3,0.7,10000,0.9493
+Neyman,3,30,-3,3,10000,0.569206009
+Neyman,3,30,0.1,2.2,10000,0.892192192
+Neyman,3,30,2.3,0.7,10000,0.9318
+Neyman,3,100,-3,3,10000,0.719800603
+Neyman,3,100,0.1,2.2,10000,0.9219
+Neyman,3,100,2.3,0.7,10000,0.935
+Neyman,3,1000,-3,3,10000,0.9077
+Neyman,3,1000,0.1,2.2,10000,0.946
+Neyman,3,1000,2.3,0.7,10000,0.9451
+Neyman,5,30,-3,3,10000,0.264285714
+Neyman,5,30,0.1,2.2,10000,0.880503778
+Neyman,5,30,2.3,0.7,10000,0.9325
+Neyman,5,100,-3,3,10000,0.729081633
+Neyman,5,100,0.1,2.2,10000,0.9082
+Neyman,5,100,2.3,0.7,10000,0.9401
+Neyman,5,1000,-3,3,10000,0.893778756
+Neyman,5,1000,0.1,2.2,10000,0.9436
+Neyman,5,1000,2.3,0.7,10000,0.9511
+Poisson lognormal,1,30,-3,3,10000,NA
+Poisson lognormal,1,30,0.1,2.2,10000,NA
+Poisson lognormal,1,30,2.3,0.7,10000,NA
+Poisson lognormal,1,100,-3,3,10000,NA
+Poisson lognormal,1,100,0.1,2.2,10000,NA
+Poisson lognormal,1,100,2.3,0.7,10000,NA
+Poisson lognormal,1,1000,-3,3,10000,NA
+Poisson lognormal,1,1000,0.1,2.2,10000,NA
+Poisson lognormal,1,1000,2.3,0.7,10000,NA
+Poisson lognormal,2,30,-3,3,10000,0.660600098
+Poisson lognormal,2,30,0.1,2.2,10000,0.9066
+Poisson lognormal,2,30,2.3,0.7,10000,0.9293
+Poisson lognormal,2,100,-3,3,10000,0.755466779
+Poisson lognormal,2,100,0.1,2.2,10000,0.9228
+Poisson lognormal,2,100,2.3,0.7,10000,0.9412
+Poisson lognormal,2,1000,-3,3,10000,0.9056
+Poisson lognormal,2,1000,0.1,2.2,10000,0.9487
+Poisson lognormal,2,1000,2.3,0.7,10000,0.9493
+Poisson lognormal,3,30,-3,3,10000,0.569206009
+Poisson lognormal,3,30,0.1,2.2,10000,0.892192192
+Poisson lognormal,3,30,2.3,0.7,10000,0.9318
+Poisson lognormal,3,100,-3,3,10000,0.719800603
+Poisson lognormal,3,100,0.1,2.2,10000,0.9219
+Poisson lognormal,3,100,2.3,0.7,10000,0.935
+Poisson lognormal,3,1000,-3,3,10000,0.9077
+Poisson lognormal,3,1000,0.1,2.2,10000,0.946
+Poisson lognormal,3,1000,2.3,0.7,10000,0.9451
+Poisson lognormal,5,30,-3,3,10000,0.264285714
+Poisson lognormal,5,30,0.1,2.2,10000,0.880503778
+Poisson lognormal,5,30,2.3,0.7,10000,0.9325
+Poisson lognormal,5,100,-3,3,10000,0.729081633
+Poisson lognormal,5,100,0.1,2.2,10000,0.9082
+Poisson lognormal,5,100,2.3,0.7,10000,0.9401
+Poisson lognormal,5,1000,-3,3,10000,0.893778756
+Poisson lognormal,5,1000,0.1,2.2,10000,0.9436
+Poisson lognormal,5,1000,2.3,0.7,10000,0.9511
+Poisson inverse Gaussian,1,30,-3,3,10000,NA
+Poisson inverse Gaussian,1,30,0.1,2.2,10000,NA
+Poisson inverse Gaussian,1,30,2.3,0.7,10000,NA
+Poisson inverse Gaussian,1,100,-3,3,10000,NA
+Poisson inverse Gaussian,1,100,0.1,2.2,10000,NA
+Poisson inverse Gaussian,1,100,2.3,0.7,10000,NA
+Poisson inverse Gaussian,1,1000,-3,3,10000,NA
+Poisson inverse Gaussian,1,1000,0.1,2.2,10000,NA
+Poisson inverse Gaussian,1,1000,2.3,0.7,10000,NA
+Poisson inverse Gaussian,2,30,-3,3,10000,0.554283458
+Poisson inverse Gaussian,2,30,0.1,2.2,10000,0.8408
+Poisson inverse Gaussian,2,30,2.3,0.7,10000,0.9105
+Poisson inverse Gaussian,2,100,-3,3,10000,0.564297341
+Poisson inverse Gaussian,2,100,0.1,2.2,10000,0.8968
+Poisson inverse Gaussian,2,100,2.3,0.7,10000,0.9347
+Poisson inverse Gaussian,2,1000,-3,3,10000,0.828142213
+Poisson inverse Gaussian,2,1000,0.1,2.2,10000,0.9378
+Poisson inverse Gaussian,2,1000,2.3,0.7,10000,0.9479
+Poisson inverse Gaussian,3,30,-3,3,10000,0.37232906
+Poisson inverse Gaussian,3,30,0.1,2.2,10000,0.728959775
+Poisson inverse Gaussian,3,30,2.3,0.7,10000,0.8813
+Poisson inverse Gaussian,3,100,-3,3,10000,0.404139434
+Poisson inverse Gaussian,3,100,0.1,2.2,10000,0.843968794
+Poisson inverse Gaussian,3,100,2.3,0.7,10000,0.912
+Poisson inverse Gaussian,3,1000,-3,3,10000,0.757701242
+Poisson inverse Gaussian,3,1000,0.1,2.2,10000,0.9289
+Poisson inverse Gaussian,3,1000,2.3,0.7,10000,0.9504
+Poisson inverse Gaussian,5,30,-3,3,10000,0.206355932
+Poisson inverse Gaussian,5,30,0.1,2.2,10000,0.563533641
+Poisson inverse Gaussian,5,30,2.3,0.7,10000,0.821364273
+Poisson inverse Gaussian,5,100,-3,3,10000,0.247240934
+Poisson inverse Gaussian,5,100,0.1,2.2,10000,0.750025068
+Poisson inverse Gaussian,5,100,2.3,0.7,10000,0.8868
+Poisson inverse Gaussian,5,1000,-3,3,10000,0.634456453
+Poisson inverse Gaussian,5,1000,0.1,2.2,10000,0.9052
+Poisson inverse Gaussian,5,1000,2.3,0.7,10000,0.9358

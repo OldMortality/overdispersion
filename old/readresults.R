@@ -16,6 +16,7 @@ dim(resultsGamma)
 
 results$gamma <- resultsGamma$gamma
 head(results[,"gamma"])
+head(results[,"chisq"])
 
 
 
@@ -32,7 +33,7 @@ head(results)
 
 
 
-results.ee <- read.csv('~/Documents/overdispersion/results-ee.csv',
+results.ee <- read.csv('~/Documents/overdispersion/results-ee2.csv',
                          stringsAsFactors = F,header=F)
 colnames(results.ee)=c("Population",'phi','n','b1','b2',"N","ee")
 dim(results.ee)
@@ -40,3 +41,22 @@ head(results.ee)
 
 results$ee <- results.ee$ee
 head(results[,"ee"])
+
+## take chisq and gamma from resultsgamma2, because the previous ones
+##  used 90% CI, not 95%
+
+resultsGamma2 <- read.csv('~/Documents/overdispersion/resultsgamma2.csv',
+                         stringsAsFactors = F,header=F)
+colnames(resultsGamma2)=c("Population",'phi','n','b1','b2',"N","chisq","gamma",
+                         "bootstrap","vgam")
+dim(resultsGamma2)
+
+results$chisq <- resultsGamma2$chisq
+results$gamma <- resultsGamma2$gamma
+head(results[,"gamma"])
+head(results[,"chisq"])
+
+
+## drop duplicates (phi == 1)
+dropm <- which(is.na(results$ee))
+results <- results[-dropm,]

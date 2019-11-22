@@ -4,7 +4,8 @@
 ##  - reading 3 files (for n=30, n=100, n=1000)
 ##
 
-results <- read.csv('~/Documents/overdispersion/results-mainpar7.csv',
+setwd('~/overdispersion')
+results <- read.csv('results-mainpar7.csv',
                stringsAsFactors = F,header=F)
 
 

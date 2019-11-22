@@ -18,7 +18,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ##  This program prints tables of the CI's of beta.
 ##
 results <- NA
-source('~/Documents/overdispersion/readresults7.R')
+setwd('~/overdispersion')
+source('readResults7.R')
 # colnames(results)
 
 # This csv file contains 20 columns:

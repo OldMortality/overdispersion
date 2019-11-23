@@ -1,33 +1,22 @@
 library(MASS)     # for "rnegbin"
 library(rmutil)   # for "rinvgauss"
 library(VGAM)
-#
 library(profvis)   
 library(foreach)
 library(doParallel)
+library(purrr)
 
 # Program to simulate CI's for the beta's/
-#
+# This one refits the model, for a single population/n,etc
 # 
-#   
-#   
 #   
 #
 #
 # Change log
-#   04/11/2019: Created this program.
+#   22/11/2019: Created this program.
 #
 
-# for testing only:##########
-population = "Negbin"
-phi = 1
-n=100
-b = c(-3,3)
-## number of simulations
-N = 100
-#############################
-
-
+setwd('~/overdispersion')
 # global constants
 CONF_LEVEL <- 0.9
 ALPHA_LOWER <- 0.05
@@ -85,30 +74,54 @@ sample.index.30 <-   matrix(create.samples(30),  nrow=1,ncol=30*N.BOOTS)
 sample.index.100 <-  matrix(create.samples(100), nrow=1,ncol=100*N.BOOTS)
 sample.index.1000 <- matrix(create.samples(1000),nrow=1,ncol=1000*N.BOOTS)
 
+#X <- matrix(rep(x,N.BOOTS),byrow=T,nrow=N.BOOTS)
+
 # profvis is for profiling (timing)
 #profvis({
 #  t <- doCalculations(population,phi,n,b,N)
 
-## 
-getY <- function(phi,population,n,mu,mn,nu)
-{
-  if (phi==1) { 
-    y<-rpois(n,mu) } 
-  else { 
-    if (population == "Negbin") {
-      y<-rnegbin(n,mu,mn) 
-    } 
-    if (population == 'Neyman') {
-      y<-rpois(n,rpois(n,mn)*nu)            
+## Get true population.
+##    
+getY <- function(phi,population,n,mu,mn,nu) {
+  
+  y <- rep(0,n)
+  while (sum(y) == 0) {
+    # get a sample, until we get one, which is not all zeros.
+    if (phi==1) { 
+      y<-rpois(n,mu) } 
+    else { 
+      if (population == "Negbin") {
+        y<-rnegbin(n,mu,mn) 
+      } 
+      if (population == 'Neyman') {
+        y<-rpois(n,rpois(n,mn)*nu)            
+      }
+      if (population == 'Poisson lognormal') {
+        y<-rpois(n,rpois(n,mn)*nu)        
+      }
     }
-    if (population == 'Poisson lognormal') {
-      y<-rpois(n,rpois(n,mn)*nu)        
-    }
-    
   }
   return(y)
 }
-##
+
+
+# function to fit Poisson model, used in bootstraps
+#   y.x is a vector of both the observations y and 
+#   the predictors x. First come the y's, then the x's.
+#   
+#
+fitit <- function(y.x,df,n) {
+  model <- glm(y.x[1:n]~y.x[(n+1):(2*n)],family="poisson")
+  phihat <- calcPhihat(fitted(model),y.x[1:n],df)
+  return(data.frame(phihat))
+}
+
+
+calcPhihat <- function(muhat,y,df) {
+  P <-sum((y-muhat)^2/muhat)
+  sbar<-mean((y-muhat)/muhat) 
+  phihat<-(P/df)/(1+sbar) 
+}
 
 ###################################################
 #
@@ -191,12 +204,8 @@ doCalculations <- function(population,phi,n,b,N) {
     # show heartbeat
     if (sim %% 500 == 0) { print(sim) }
     
-    # set true population, but skip those simulations
-    #    in which all observations are zero.
-    y <- rep(0,n)
-    while (sum(y) == 0) {
-      y <- getY(phi,population,n,mu,mn,nu)
-    }
+    # set true population
+    y <- getY(phi,population,n,mu,mn,nu)
     
     # fit Poisson model
     model <- glm(y~x,family="poisson")
@@ -228,24 +237,18 @@ doCalculations <- function(population,phi,n,b,N) {
     
     if (do.bootstrap == T) {
       
-      
-      #phihat.boots <- vector()
-      e. <- (y-muhat)/sqrt(muhat)
-      e.squared <- e.^2
-      # split this into a matrix with 1 row for each bootstrap
       ss <- matrix(
-        data=e.squared[sample.index],byrow=T,nrow=N.BOOTS,ncol=n)
-      
-      # 1 row for each bootstrap 
-      
-      phihat.boots <- (rowSums(ss)/df)/(1+sbar)
-      ts <- rnorm(N.BOOTS) * sqrt(phihat/phihat.boots)
-      #hist(ts) 
+        data=y[sample.index],byrow=T,nrow=N.BOOTS,ncol=n)
+      preds <- matrix(
+        data=x[sample.index],byrow=T,nrow=N.BOOTS,ncol=n)
+      # apply poisson model to each row (ie. each bootstrap)
+      phihat.boots <- apply(cbind(ss,preds),1,fitit,df,n)
+      ts <- rnorm(N.BOOTS) * sqrt(phihat/unlist(phihat.boots))
+      # get t-values 
       t.low <- quantile(ts,ALPHA_LOWER)
       t.upp <- quantile(ts,ALPHA_UPPER)
       
       # phihat
-      
       boots2.low[sim] <- coef.x - t.upp * phihat * coef.se
       boots2.upp[sim] <- coef.x - t.low * phihat * coef.se
       boots2.err[sim] <- (beta[2] < boots2.low[sim]) |
@@ -256,7 +259,7 @@ doCalculations <- function(population,phi,n,b,N) {
     ## VGAM
     ##
     
-    do.RR <- T
+    do.RR <- F
 
     if (do.RR) {
     
@@ -339,9 +342,9 @@ doCalculations <- function(population,phi,n,b,N) {
 print('started')
 print(Sys.time())
 set.seed(10)
-pops <- c("Negbin","Neyman","Poisson lognormal")
-betas <- rbind(c(-3,3),c(0.1,2.2),c(2.3,0.7))
-ns <-  c(30,100,1000)
+pops <- c("Negbin")    #,"Neyman","Poisson lognormal")
+betas <- rbind(c(-3,3)) #,c(0.1,2.2),c(2.3,0.7))
+ns <-  c(30) #,1000)
 N <- 10000
 
 # All calculations, for writing to csv file. This will be
@@ -353,10 +356,10 @@ counter <- 0
 phis <- c(1,3,5)
 for (pop in pops) {
     for (n in ns) {
-      for (coef in seq(1,3)) {
+      for (coef in seq(1,1)) {
         
         print(paste(Sys.time(),'counter',counter,sep=': '))
-         calcs <- foreach(ph = phis, .verbose=TRUE, .combine = rbind, .packages=c('VGAM','MASS'))  %dopar% {
+         calcs <- foreach(ph = phis, .verbose=TRUE, .combine = rbind, .packages=c('VGAM','MASS','purrr'))  %dopar% {
                    doCalculations(population = pop,
                                  phi= ph,
                                  n = n,
@@ -380,6 +383,6 @@ for (pop in pops) {
     }
   
 }
-write.csv(results,'~/Documents/overdispersion/results-mainpar7.csv',row.names=F,quote=F)
+write.csv(results,'~/results-mainpar8b.csv',row.names=F,quote=F)
 print('finished')
 print(Sys.time())

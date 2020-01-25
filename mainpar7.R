@@ -20,11 +20,11 @@ library(doParallel)
 
 # for testing only:##########
 population = "Negbin"
-phi = 1
-n=100
+phi = 3
+n=30
 b = c(-3,3)
 ## number of simulations
-N = 100
+N = 10000
 #############################
 
 
@@ -87,7 +87,7 @@ sample.index.1000 <- matrix(create.samples(1000),nrow=1,ncol=1000*N.BOOTS)
 
 # profvis is for profiling (timing)
 #profvis({
-#  t <- doCalculations(population,phi,n,b,N)
+#  t3 <- doCalculations(population,phi,n,b,N)
 
 ## 
 getY <- function(phi,population,n,mu,mn,nu)
@@ -224,7 +224,7 @@ doCalculations <- function(population,phi,n,b,N) {
     ##
     ## Bootstrap
     ##
-    do.bootstrap <- T
+    do.bootstrap <- F
     
     if (do.bootstrap == T) {
       
@@ -246,8 +246,8 @@ doCalculations <- function(population,phi,n,b,N) {
       
       # phihat
       
-      boots2.low[sim] <- coef.x - t.upp * phihat * coef.se
-      boots2.upp[sim] <- coef.x - t.low * phihat * coef.se
+      boots2.low[sim] <- coef.x - t.upp * sqrt(phihat) * coef.se
+      boots2.upp[sim] <- coef.x - t.low * sqrt(phihat) * coef.se
       boots2.err[sim] <- (beta[2] < boots2.low[sim]) |
         (beta[2] > boots2.upp[sim])
     }	  
@@ -256,7 +256,7 @@ doCalculations <- function(population,phi,n,b,N) {
     ## VGAM
     ##
     
-    do.RR <- T
+    do.RR <- F
 
     if (do.RR) {
     

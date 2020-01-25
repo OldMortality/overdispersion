@@ -1,0 +1,62 @@
+---
+title: "overdispersion simulations 10"
+author: "Michel de Lange"
+date: "21/01/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## CI's
+
+The bootstrap has been calculated by resampling the residuals
+
+```{r echo=F}
+##
+##  This program prints tables of the CI's of beta.
+##
+results <- NA
+setwd('~/overdispersion')
+source('readResults10.R')
+# colnames(results)
+
+# This csv file contains 15 columns:
+#   Population, phi, n, b1, b2, N  (that is 6)
+#   2 coverage rates (phi and beta)  
+#   2 proportions with CI not containing zero (phi) or one (beta)
+#   2 median widths of the CI (phi and beta)
+#   1 disused column
+#   mu.lower and mu.upper
+
+ 
+
+# where phi==1, population is Poisson
+results[which(results$phi == 1),"Population"] <- "Poisson"
+ 
+
+```
+
+```{r }
+library(knitr)
+header.cols <- c(1,2,3,4,5,14,15)
+kable(results[,c(header.cols,7,8)],
+      caption='Coverage of 90% CIs',
+      digits=2)
+```
+
+```{r }
+kable(results[,c(header.cols,9,10)],
+      caption='CI excludes one/zero',
+      digits=2)
+```
+
+```{r }
+kable(results[,c(header.cols,11,12)],
+      caption = '90% CIs median width',
+      digits = 2)
+```
+
+
+

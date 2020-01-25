@@ -1,7 +1,7 @@
 library(MASS)     # for "rnegbin"
-library(rmutil)   # for "rinvgauss"
-library(VGAM)
-library(profvis)   
+#library(rmutil)   # for "rinvgauss"
+#library(VGAM)
+  
 library(foreach)
 library(doParallel)
 library(purrr)
@@ -9,14 +9,16 @@ library(purrr)
 # Program to simulate CI's for the beta's/
 # This one refits the model, for a single population/n,etc
 # 
-#   
-#
 #
 # Change log
 #   22/11/2019: Created this program.
+#   05/12/2019: Corrected bug where did not take sqrt of phi
+#   08/12/2019: Keeping CIs for phi.
+#
 #
 
-setwd('~/overdispersion')
+rm(list=ls(all=TRUE))
+setwd('~/sims')
 # global constants
 CONF_LEVEL <- 0.9
 ALPHA_LOWER <- 0.05
@@ -27,11 +29,11 @@ N.BOOTS = 10000
 
 #
 # Returns the proportion of elements in CI,
-#   which do not include zero. Elements containing
+#   which do not include value. Elements containing
 #   NA are disregarded. Returns NaN if all elements are NA,
 #   but we hold that for impossible.
-calcExcludesZero <- function(low,upp) {
-  return(sum(low > 0 | upp < 0,na.rm = T)/length(which(!is.na(low))))
+calcExcludesValue <- function(value,low,upp) {
+  return(sum(low > value | upp < value,na.rm = T)/length(which(!is.na(low))))
 }
 
 # returns median width of CIs
@@ -78,7 +80,7 @@ sample.index.1000 <- matrix(create.samples(1000),nrow=1,ncol=1000*N.BOOTS)
 
 # profvis is for profiling (timing)
 #profvis({
-#  t <- doCalculations(population,phi,n,b,N)
+#t <- doCalculations(population,phi,n,b,N)
 
 ## Get true population.
 ##    
@@ -130,13 +132,9 @@ calcPhihat <- function(muhat,y,df) {
 # Computes everything for 1 combination of population, phi,
 #   sample size (n), beta, number of simulations (N)
 #
-# Returns: a vector of 12. There are 3 methods for working out
-#   a confidence interval for beta, so we have:
-#   3 coverage rates. 
-#   3 proportions with CI for beta excluding zero
-#   3 median widths of the CI for beta
-#   3 rates of method not working.
-#
+# Returns: 
+
+
 doCalculations <- function(population,phi,n,b,N) {
   
   sample.index <- NA
@@ -177,23 +175,25 @@ doCalculations <- function(population,phi,n,b,N) {
   w<-(mn+1)/mn
   mx<-log(mu)-0.5*log(w)
   sx<-sqrt(log(w))
-
-  # error rates of CIs
-  chisq.err <- vector()
-  boots2.err <- vector() 
-  vgam.err <- vector()	    
   
-  # estimates of phi
   
+    
   ## vectors to hold CIs
   {
-  chisq.low <- vector()
-  chisq.upp <- vector()
-  boots2.low <- vector()
-  boots2.upp <- vector()
-  vgam.low <- vector()
-  vgam.upp <- vector()
+    boots.phi.int <- vector()
+    
+    phi.low <- vector()
+    phi.upp <- vector()
+    phi.err <- vector()
+    
+    beta.low <- vector()
+    beta.upp <- vector()
+    beta.err <- vector() 
+  }
   
+  #isInInterval(2,c(1,3))
+  isInInterval <- function(value,interval) {
+    return(value > interval[1] & value < interval[2])
   }
   
   #  
@@ -203,7 +203,7 @@ doCalculations <- function(population,phi,n,b,N) {
     
     # show heartbeat
     if (sim %% 500 == 0) { print(sim) }
-    
+    print(sim)    
     # set true population
     y <- getY(phi,population,n,mu,mn,nu)
     
@@ -213,22 +213,9 @@ doCalculations <- function(population,phi,n,b,N) {
     P<-sum((y-muhat)^2/muhat)
     sbar<-mean((y-muhat)/muhat) 
     phihat<-(P/(n-p))/(1+sbar) 
-    
-    ##
-    ## chisquare 
-    ##
     df <- n-p
-    summ <- summary(model)
-    coef.x <- summ$coefficients[2,1]
-    coef.se <- summ$coefficients[2,2]
-    chisq.low[sim] <- coef.x - qt(ALPHA_UPPER,df=df) * phihat * coef.se
-    chisq.upp[sim] <- coef.x - qt(ALPHA_LOWER,df=df) * phihat * coef.se
-    
-    chisq.err[sim] <- 0
-    if (beta[2] < chisq.low[sim] | beta[2] > chisq.upp[sim]) {
-      chisq.err[sim] <-  1
-    }
-    
+    coef.x <- summary(model)$coefficients[2,1]
+    coef.se <- summary(model)$coefficients[2,2]
     
     ##
     ## Bootstrap
@@ -242,54 +229,26 @@ doCalculations <- function(population,phi,n,b,N) {
       preds <- matrix(
         data=x[sample.index],byrow=T,nrow=N.BOOTS,ncol=n)
       # apply poisson model to each row (ie. each bootstrap)
-      phihat.boots <- apply(cbind(ss,preds),1,fitit,df,n)
-      ts <- rnorm(N.BOOTS) * sqrt(phihat/unlist(phihat.boots))
+      phihat.boots <- unlist(apply(cbind(ss,preds),1,fitit,df,n))
+
+      # 05/12/19 keeping CI for phi bootstrap, as opposed to CI for beta
+      boots.phi.int <- phihat^2  / quantile(phihat.boots,c(ALPHA_UPPER,ALPHA_LOWER)) 
+
+      ts <- rnorm(N.BOOTS) * sqrt(phihat/phihat.boots)
       # get t-values 
       t.low <- quantile(ts,ALPHA_LOWER)
       t.upp <- quantile(ts,ALPHA_UPPER)
       
-      # phihat
-      boots2.low[sim] <- coef.x - t.upp * phihat * coef.se
-      boots2.upp[sim] <- coef.x - t.low * phihat * coef.se
-      boots2.err[sim] <- (beta[2] < boots2.low[sim]) |
-        (beta[2] > boots2.upp[sim])
+      # ci for beta
+      beta.low[sim] <- coef.x - t.upp * sqrt(phihat) * coef.se
+      beta.upp[sim] <- coef.x - t.low * sqrt(phihat) * coef.se
+      beta.err[sim] <- !isInInterval(beta[2],c(beta.low[sim],beta.upp[sim]))
+      # ci for phi
+      phi.low[sim] <- boots.phi.int[1]
+      phi.upp[sim] <- boots.phi.int[2]
+      phi.err[sim] <- !isInInterval(phi,c(phi.low[sim],phi.upp[sim]))
+      
     }	  
-    
-    ##
-    ## VGAM
-    ##
-    
-    do.RR <- F
-
-    if (do.RR) {
-    
-      ci <- tryCatch(
-        {
-          a3 <- vglm(y~x,family=negbinomial(parallel=T,zero=NULL))
-          # method = "wald
-          # method = "profile"
-          ci <- confint(a3,level = CONF_LEVEL)[3,]
-          # estimate for phi
-          
-        },
-        error=function(cond) {
-          message(paste('rr',y,x,cond,sep=' '))
-          return(NA)
-        } ,
-        warning=function(cond) {
-          #ci <- confint(a3)[3,]
-          return(NA)
-        }
-      
-      )
-      vgam.low[sim] <- ci[1]
-      vgam.upp[sim] <- ci[2]
-      
-      # this will be NA if vgam.upp[sim]==NA
-      vgam.err[sim] <- (beta[2] < ci[1]) | (beta[2] > ci[2])
-
-    }
-    
    
   }
   
@@ -297,37 +256,33 @@ doCalculations <- function(population,phi,n,b,N) {
   ## end of simulations
   ##
   
-  # combine power calculations
-  #
-  chi.p1 <- calcExcludesZero(chisq.low,chisq.upp)
-  bo2.p1 <- calcExcludesZero(boots2.low,boots2.upp)
-  vga.p1 <- calcExcludesZero(vgam.low,vgam.upp)
-  result.prop1 <- c(chi.p1,bo2.p1,vga.p1)
   
   # combine coverage rates
   #
-  errorChisq <- sum(chisq.err)/N
-  errorboots2 <- sum(boots2.err,na.rm=T)/length(which(!is.na(boots2.err)))
-  errorVGAM  <- sum(vgam.err,na.rm=T)/length(which(!is.na(vgam.err)))
+  error.phi <- sum(phi.err)/N
+  error.beta <- sum(beta.err,na.rm=T)/length(which(!is.na(beta.err)))
   # convert error rates to coverage
-  result.coverage <- c(1-errorChisq,1-errorboots2,1-errorVGAM)
+  result.coverage <- c(1-error.phi,1-error.beta)
+  
+  # combine power calculations
+  #
+  phi.power <- calcExcludesValue(1,phi.low,phi.upp)
+  beta.power <- calcExcludesValue(0,beta.low,beta.upp)
+  result.power <- c(phi.power,beta.power)
   
   # combine CI median widths
   #
-  chi.width <- calcMedianWidth(chisq.low,chisq.upp)
-  bo2.width <- calcMedianWidth(boots2.low,boots2.upp)
-  vga.width <- calcMedianWidth(vgam.low,vgam.upp)
-  result.width <- c(chi.width,bo2.width,vga.width)
+  phi.width <- calcMedianWidth(phi.low,phi.upp)
+  beta.width <- calcMedianWidth(beta.low,beta.upp)
+  result.width <- c(phi.width,beta.width)
   
   # gather the rates of NAs, ie. the rate of the method not working
-  chi.na <- 0 # always works
-  bo2.na <- length(which(is.na(boots2.err)))/N
-  vga.na <- length(which(is.na(vgam.err)))/N
-  result.na <- c(chi.na, bo2.na,vga.na)
+  beta.na <- length(which(is.na(beta.err)))/N
+  result.na <- c(beta.na)
   
   
   # combine all results. This one will go to the csv file.
-  result <- c(result.coverage,result.prop1,result.width,result.na)
+  result <- c(result.coverage,result.power,result.width,result.na)
   return(result)
 }
 
@@ -342,10 +297,12 @@ doCalculations <- function(population,phi,n,b,N) {
 print('started')
 print(Sys.time())
 set.seed(10)
-pops <- c("Negbin")    #,"Neyman","Poisson lognormal")
-betas <- rbind(c(-3,3)) #,c(0.1,2.2),c(2.3,0.7))
-ns <-  c(30) #,1000)
+pops <- c("Negbin" ,"Neyman","Poisson lognormal")
+betas <- rbind(c(-3,3),c(0.1,2.2),c(2.3,0.7))
+ns <-  c(30,100) #,1000)
 N <- 10000
+
+
 
 # All calculations, for writing to csv file. This will be
 #   vector of strings: Each line is the comma separated results for
@@ -359,7 +316,7 @@ for (pop in pops) {
       for (coef in seq(1,1)) {
         
         print(paste(Sys.time(),'counter',counter,sep=': '))
-         calcs <- foreach(ph = phis, .verbose=TRUE, .combine = rbind, .packages=c('VGAM','MASS','purrr'))  %dopar% {
+         calcs <- foreach(ph = phis, .combine = rbind, .packages=c('MASS','purrr'))  %dopar% {
                    doCalculations(population = pop,
                                  phi= ph,
                                  n = n,
@@ -371,11 +328,10 @@ for (pop in pops) {
         for (j in 1:length(phis)) {
           counter <- counter + 1
           calcs.phi <- paste(pop,phis[j],n,betas[coef,1],betas[coef,2],N,sep=',')
-          for (k in 1:12) {
+          for (k in 1:dim(calcs)[2]) {
             calcs.phi <- paste(calcs.phi,calcs[j,k],sep=',')
           }
           
-          #print(calcs.phi)
           # store in results, which becomes a csv file
           results[counter] <- calcs.phi
         }
@@ -383,6 +339,9 @@ for (pop in pops) {
     }
   
 }
-write.csv(results,'~/results-mainpar8b.csv',row.names=F,quote=F)
+# 8b contains results for Neyman and Poisson lognormal
+write.csv(results,'results-mainpar8b.csv',row.names=F,quote=F)
 print('finished')
 print(Sys.time())
+
+

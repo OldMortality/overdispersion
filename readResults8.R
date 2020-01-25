@@ -5,7 +5,7 @@
 ##
 
 setwd('~/overdispersion')
-results <- read.csv('~/results-mainpar8.csv',
+results <- read.csv('results-mainpar8.csv',
                stringsAsFactors = F,header=F)
 
 
@@ -24,6 +24,10 @@ colnames(results)=c("Population",'phi','n','b1','b2',"N",
 head(results)
 dim(results)
 
+results$cover.chisq <- NA
+results$pow.chisq <- NA
+results$med.chisq <- NA
+results$err.chisq <- NA
 
 
 ## add mu lower and upper, calculated from the betas

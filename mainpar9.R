@@ -20,9 +20,9 @@ library(purrr)
 rm(list=ls(all=TRUE))
 setwd('~/sims')
 # global constants
-CONF_LEVEL <- 0.9
-ALPHA_LOWER <- 0.05
-ALPHA_UPPER <- 0.95
+CONF_LEVEL <- 0.95
+ALPHA_LOWER <- 0.025
+ALPHA_UPPER <- 0.975
 # number of bootstrap samples
 N.BOOTS = 10000
 
@@ -297,7 +297,7 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
 print('started')
 print(Sys.time())
 set.seed(10)
-N <- 10
+N <- 10000
 #betas <- rbind(c(-3,3),c(0.1,2.2),c(2.3,0.7))
 
 
@@ -326,7 +326,7 @@ calcs <- foreach(i=1:dim(combs)[1], .combine = rbind, .packages=c('MASS','purrr'
                  N = N)
 }  
 
-write.csv(calcs,'results-mainpar9b.csv',row.names=F,quote=F)
+write.csv(calcs,'results-mainpar9.csv',row.names=F,quote=F)
 print('finished')
 print(Sys.time())
 

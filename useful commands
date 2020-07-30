@@ -1,0 +1,31 @@
+nesi:
+https://support.nesi.org.nz/hc/en-gb/articles/360000684396
+
+show all jobs submitted today
+sacct
+
+ssh mahuika
+module load R/4.0.1-gimkl-2020a
+edit sims/myjob2.sl
+
+
+matrix:
+
+scp -P 22322 mdelange@matrix.otago.ac.nz:sim/mainpar10.R ~/
+sbatch myjob2.sl
+
+
+Move a file from your local machine to Mahuika.
+scp <path/filename> mahuika:<path/filename>
+Move a file from Mahuika to your local machine.
+scp mahuika:<path/filename> <path/filename>	
+	scp mahuika:sims/mainpar10.R ~/
+	scp mahuika:sims/results-mainpar10.csv ~/Documents/overdispersion/nesi
+
+
+
+
+nesi:
+mainpar10.R	95% CI's for phi, beta. fast-boot
+mainpar11.R     chisq and vgam
+mainpar14.r     rewrite

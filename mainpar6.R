@@ -2,7 +2,7 @@ library(MASS)     # for "rnegbin"
 library(rmutil)   # for "rinvgauss"
 library(VGAM)
 #
-library(proxfvis)   
+library(profvis)   
 library(foreach)
 library(doParallel)
 

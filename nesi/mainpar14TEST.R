@@ -17,7 +17,6 @@ library(doParallel)
 # Change log
 #   28/07/2020: Created this program, by modifying mainpar10.R and mainpar11.R
 #   29/07/2020: Complete rewrite
-#   12/08/2020: fixed bugs with beta parameters
 
 # for testing only:##########
 population = "Negbin"
@@ -25,7 +24,7 @@ phi = 3
 n=100
 b = c(-3,3)
 ## number of simulations
-N = 10000
+N = 10
 #############################
 
 # global constants
@@ -33,7 +32,7 @@ CONF_LEVEL <- 0.95
 ALPHA_LOWER <- 0.025
 ALPHA_UPPER <- 0.975
 # number of bootstrap samples
-N.BOOTS = 10000
+N.BOOTS = 2
 
 
 # 29/07/20 Replaced calcExcludesZero and calcExcludesOne
@@ -106,7 +105,7 @@ sample.index.1000 <- matrix(create.samples(1000),nrow=1,ncol=1000*N.BOOTS)
 
 # profvis is for profiling (timing)
 #profvis({
-#  t3 <- doCalculations(population,phi,n,b,N)
+#  t3 <- doCalculations(population,phi,n,b1=b[1],b2=b[2],N)
 
 ## 
 ##
@@ -245,14 +244,14 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   parms <- paste(population,phi,n,b1,b2,N,sep=',')
   print(parms)
   
-  p <- 2
-  eta <- b1 + b2*x
-  mu <- exp(eta)
+  p<-2
+  eta<-b1+b2*x
+  mu<-exp(eta)
   nu <- phi-1
-  mn <- mu/nu
-  w <-  (mn+1)/mn
-  mx <- log(mu)-0.5*log(w)
-  sx <- sqrt(log(w))
+  mn<-mu/nu
+  w<-(mn+1)/mn
+  mx<-log(mu)-0.5*log(w)
+  sx<-sqrt(log(w))
 
   
   
@@ -282,7 +281,7 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   #  
   # Start simulations
   #
-  for (sim in 1:N) {
+  for (sim in 447:1000) {
     
     # show heartbeat
     if (sim %% 500 == 0) { print(sim) }
@@ -320,7 +319,7 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
                                     sbar=sbar,
                                     phihat=phihat,
                                     coef.x=coef.x,
-                                    coef.se=coef.se) 
+                                    coef.se=coef.se)
     fb.low[sim] <- intervals[1]
     fb.upp[sim] <- intervals[2]
     fb.phi.low[sim] <- intervals[3]
@@ -328,6 +327,7 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
     
     
     intervals <- intervals.vgam(x=x,y=y) 
+    
     vg.low[sim] <- intervals[1]
     vg.upp[sim] <- intervals[2]
     vg.phi.low[sim] <- intervals[3]
@@ -362,14 +362,14 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   vg.phi.pow <- calcExcludesValue(val=1,low=vg.phi.low,upp=vg.phi.upp)
   hy.phi.pow <- calcExcludesValue(val=1,low=hy.phi.low,upp=hy.phi.upp)
   
-  result.pow   <- round(c(ch.pow,
+  result.pow   <- c(ch.pow,
                     fb.pow,
                     vg.pow,
                     hy.pow,
                     ch.phi.pow,
                     fb.phi.pow,
                     vg.phi.pow,
-                    hy.phi.pow),3)
+                    hy.phi.pow)
   
   # combine coverage rates
   #
@@ -385,14 +385,14 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   hy.cov <- calcIncludesValue(b2,hy.low,hy.upp)
   hy.cov.phi <- calcIncludesValue(phi,hy.phi.low,hy.phi.upp)
   
-  result.cov  <- round(c(ch.cov,
+  result.cov  <- c(ch.cov,
                    ch.cov.phi,
                    fb.cov,
                    fb.cov.phi,
                    vg.cov,
                    vg.cov.phi,
                    hy.cov,
-                   hy.cov.phi),3)
+                   hy.cov.phi)
   
   # combine CI median widths
   #
@@ -408,14 +408,14 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   hy.width <- calcMedianWidth(hy.low,hy.upp)
   hy.width.phi <- calcMedianWidth(hy.phi.low,hy.phi.upp)
   
-  result.wid <- round(c(ch.width,
+  result.wid <- c(ch.width,
                   ch.width.phi,
                   fb.width,
                   fb.width.phi,
                   vg.width,
                   vg.width.phi,
                   hy.width,
-                  hy.width.phi),3)
+                  hy.width.phi)
   
   # gather the rates of NAs, ie. the rate of the method not working
   ch.na <- length(which(is.na(ch.low)))/N
@@ -425,7 +425,7 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   result.na <- c(ch.na,fb.na, vg.na,hy.na)
 
   # combine all results. This one will go to the csv file.
-  result <- c(population,phi,n,b1,b2,N,result.cov,result.pow,result.wid,result.na)
+  result <- c(as.character(population),phi,n,b1,b2,N,result.cov,result.pow,result.wid,result.na)
   return(result)
 }
 
@@ -465,15 +465,17 @@ combs[which(combs$beta1==-3),'beta2'] <- 3
 combs[which(combs$beta1==0.1),'beta2'] <- 2.2
 combs[which(combs$beta1==2.3),'beta2'] <-0.7
 combs
+
 # we use a CPU cores for every combination
 no_cores= dim(combs)[1]
-registerDoParallel(makeCluster(no_cores,outfile='mainpar.log'))
+registerDoParallel(makeCluster(no_cores))
 
 
 # All calculations, for writing to csv file. This will be
 #   vector of strings: Each line is the comma separated results for
 #   one set of parameters (population,phi,n,beta)
-calcs <- foreach(i=1:dim(combs)[1], .combine = rbind, .packages=c('MASS','purrr','VGAM'))  %dopar% {
+#dim(combs)[1]
+calcs <- 
   doCalculations(population = combs$pop[i],
                  phi= combs$phi[i],
                  n = combs$n[i],
@@ -481,15 +483,12 @@ calcs <- foreach(i=1:dim(combs)[1], .combine = rbind, .packages=c('MASS','purrr'
                  b2 = combs$beta2[i],
                  N = N)
 
-
-}
 dim(calcs)
 dropm <- which(is.na(calcs[,1]))
 colnames(calcs) <- getColnames()
-write.csv(calcs[-dropm,],'results-mainpar14.csv',row.names=F,quote=F)
+write.csv(calcs[-dropm,],'results-mainpar14TEST.csv',row.names=F,quote=F)
 print('finished')
 print(Sys.time())
-
 
 
 

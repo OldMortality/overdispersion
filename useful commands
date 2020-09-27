@@ -13,6 +13,7 @@ matrix:
 
 scp -P 22322 mdelange@matrix.otago.ac.nz:sim/mainpar10.R ~/
 sbatch myjob2.sl
+scancel <jobid> will cancel the job 
 
 
 Move a file from your local machine to Mahuika.

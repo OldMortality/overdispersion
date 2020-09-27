@@ -4,8 +4,6 @@ library(MASS)     # for "rnegbin"
 library(VGAM)
 #
 #library(profvis)   
-library(foreach)
-library(doParallel)
 
 # Program to simulate CI's for beta2 and phi's using 
 #   traditional Chisq method and vgam, 
@@ -25,7 +23,7 @@ phi = 3
 n=100
 b = c(-3,3)
 ## number of simulations
-N = 10000
+N = 5000
 #############################
 
 # global constants
@@ -33,7 +31,7 @@ CONF_LEVEL <- 0.95
 ALPHA_LOWER <- 0.025
 ALPHA_UPPER <- 0.975
 # number of bootstrap samples
-N.BOOTS = 10000
+N.BOOTS = 10
 
 
 # 29/07/20 Replaced calcExcludesZero and calcExcludesOne
@@ -134,6 +132,8 @@ getY <- function(phi,population,n,mu,mn,nu) {
 }
 ##
 
+ 
+
 intervals.chisq <- function(coef.x,coef.se,df,phihat) {
   beta.low <- coef.x - qt(ALPHA_UPPER,df=df) * phihat * coef.se
   beta.upp <- coef.x - qt(ALPHA_LOWER,df=df) * phihat * coef.se
@@ -220,7 +220,7 @@ getSampleIndex <- function(n) {
   return(list(x=x,sample.index=sample.index))
 }
 
-###################################################
+###########################doCal########################
 #
 # doCalculations
 #
@@ -333,9 +333,11 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
     vg.phi.low[sim] <- intervals[3]
     vg.phi.upp[sim] <- intervals[4]
     
-    
   }
   
+  #print("---vg.low---")
+  #print(vg.low)
+  #print("------------------")
   ##
   ## end of simulations
   ##
@@ -362,14 +364,14 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   vg.phi.pow <- calcExcludesValue(val=1,low=vg.phi.low,upp=vg.phi.upp)
   hy.phi.pow <- calcExcludesValue(val=1,low=hy.phi.low,upp=hy.phi.upp)
   
-  result.pow   <- round(c(ch.pow,
+  result.pow   <- c(ch.pow,
                     fb.pow,
                     vg.pow,
                     hy.pow,
                     ch.phi.pow,
                     fb.phi.pow,
                     vg.phi.pow,
-                    hy.phi.pow),3)
+                    hy.phi.pow)
   
   # combine coverage rates
   #
@@ -385,14 +387,14 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   hy.cov <- calcIncludesValue(b2,hy.low,hy.upp)
   hy.cov.phi <- calcIncludesValue(phi,hy.phi.low,hy.phi.upp)
   
-  result.cov  <- round(c(ch.cov,
+  result.cov  <- c(ch.cov,
                    ch.cov.phi,
                    fb.cov,
                    fb.cov.phi,
                    vg.cov,
                    vg.cov.phi,
                    hy.cov,
-                   hy.cov.phi),3)
+                   hy.cov.phi)
   
   # combine CI median widths
   #
@@ -402,20 +404,14 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   fb.width <- calcMedianWidth(fb.low,fb.upp)
   fb.width.phi <- calcMedianWidth(fb.phi.low,fb.phi.upp)
   
-  vg.width <- calcMedianWidth(vg.low,vg.upp)
-  vg.width.phi <- calcMedianWidth(vg.phi.low,vg.phi.upp)
-  
-  hy.width <- calcMedianWidth(hy.low,hy.upp)
-  hy.width.phi <- calcMedianWidth(hy.phi.low,hy.phi.upp)
-  
-  result.wid <- round(c(ch.width,
+  result.wid <- c(ch.width,
                   ch.width.phi,
                   fb.width,
                   fb.width.phi,
                   vg.width,
                   vg.width.phi,
                   hy.width,
-                  hy.width.phi),3)
+                  hy.width.phi)
   
   # gather the rates of NAs, ie. the rate of the method not working
   ch.na <- length(which(is.na(ch.low)))/N
@@ -425,7 +421,7 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
   result.na <- c(ch.na,fb.na, vg.na,hy.na)
 
   # combine all results. This one will go to the csv file.
-  result <- c(population,phi,n,b1,b2,N,result.cov,result.pow,result.wid,result.na)
+  result <- c(as.character(population),phi,n,b1,b2,N,result.cov,result.pow,result.wid,result.na)
   return(result)
 }
 
@@ -434,7 +430,6 @@ doCalculations <- function(population,phi,n,b1,b2,N) {
 ## end of doCalculations
 ##
 ###################################################
-# profis })
 
 getColnames <- function() {
   return(c('population',
@@ -453,7 +448,7 @@ getColnames <- function() {
 print('started mainpar14.R')
 print(Sys.time())
 set.seed(10)
-N <- 10000
+N <- 2500
 phis <- c(1,3,5) # 5
 pops <- c("Negbin" ,"Neyman","Poisson lognormal")
 beta1 <- c(-3,0.1,2.3)
@@ -464,31 +459,29 @@ combs$beta2 <- NA
 combs[which(combs$beta1==-3),'beta2'] <- 3
 combs[which(combs$beta1==0.1),'beta2'] <- 2.2
 combs[which(combs$beta1==2.3),'beta2'] <-0.7
-combs
+
 # we use a CPU cores for every combination
-no_cores= dim(combs)[1]
-registerDoParallel(makeCluster(no_cores,outfile='mainpar.log'))
 
 
 # All calculations, for writing to csv file. This will be
 #   vector of strings: Each line is the comma separated results for
 #   one set of parameters (population,phi,n,beta)
-calcs <- foreach(i=1:dim(combs)[1], .combine = rbind, .packages=c('MASS','purrr','VGAM'))  %dopar% {
-  doCalculations(population = combs$pop[i],
-                 phi= combs$phi[i],
-                 n = combs$n[i],
-                 b1 = combs$beta1[i],
-                 b2 = combs$beta2[i],
-                 N = N)
 
 
-}
+i = 3   
+calcs <- doCalculations(population = combs$pop[i],
+                  phi= combs$phi[i],
+                  n = combs$n[i],
+                  b1 = combs$beta1[i],
+                  b2 = combs$beta2[i],
+                  N = 500 )
 dim(calcs)
-dropm <- which(is.na(calcs[,1]))
-colnames(calcs) <- getColnames()
-write.csv(calcs[-dropm,],'results-mainpar14.csv',row.names=F,quote=F)
-print('finished')
-print(Sys.time())
+#dropm <- which(is.na(calcs[,1]))
+#calcs <- calcs[-dropm,]
+#dim(calcs)
+#write.csv(calcs,'results-mainpar14.csv',row.names=F,quote=F)
+#print('finished')
+#print(Sys.time())
 
 
 

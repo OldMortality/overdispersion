@@ -1,0 +1,10 @@
+"","population","phi","n","b1","b2","N","cover_phi","cover_b","power_phi","power_b","width_phi","width_b","na"
+"result.1","Negbin",1,1000,-3,3,1000,0.918,0.946,0.082,1,0.160401506215441,0.927178774898064,0
+"result.2",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"result.3",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"result.4","Negbin",1,1000,0.1,2.2,1000,0.937,0.947,0.063,1,0.17223377939214,0.23877530316331,0
+"result.5",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"result.6",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"result.7","Negbin",1,1000,2.3,0.7,1000,0.958,0.947,0.042,1,0.174356597398164,0.11377238822487,0
+"result.8",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"result.9",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
